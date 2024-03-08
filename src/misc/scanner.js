@@ -1,5 +1,6 @@
 import { DropImageFetchError } from "./errors.js";
 import { eventOn } from "callforth";
+import { BarcodeDetector } from "barcode-detector";
 
 const adaptOldFormat = detectedCodes => {
   if (detectedCodes.length > 0) {
@@ -41,9 +42,10 @@ const adaptOldFormat = detectedCodes => {
  * potentially pictured QR codes.
  */
 export const keepScanning = (videoElement, options) => {
-  const barcodeDetector = new BarcodeDetector({ formats: ["qr_code"] });
 
-  const { detectHandler, locateHandler, minDelay } = options;
+  const barcodeDetector = new BarcodeDetector({ formats });
+
+  const { detectHandler, locateHandler, minDelay, formats } = options;
 
   const processFrame = state => async timeNow => {
     if (videoElement.readyState > 1) {
@@ -92,15 +94,15 @@ const imageElementFromUrl = async url => {
   return image;
 }
 
-export const processFile = async file => {
-  const barcodeDetector = new BarcodeDetector({ formats: ["qr_code"] })
+export const processFile = async (file, formats) => {
+  const barcodeDetector = new BarcodeDetector({ formats})
   const detectedCodes = await barcodeDetector.detect(file)
 
   return adaptOldFormat(detectedCodes)
 }
 
-export const processUrl = async url => {
-  const barcodeDetector = new BarcodeDetector({ formats: ["qr_code"] })
+export const processUrl = async (url, formats) => {
+  const barcodeDetector = new BarcodeDetector({ formats })
   const image = await imageElementFromUrl(url);
   const detectedCodes = await barcodeDetector.detect(image)
 

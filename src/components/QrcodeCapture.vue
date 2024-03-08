@@ -16,6 +16,13 @@ import CommonAPI from "../mixins/CommonAPI.vue";
 export default {
   name: "qrcode-capture",
 
+  props: {
+    formats: {
+      type: Array,
+      default: () => ["qr_code"]
+    }
+  },
+
   mixins: [CommonAPI],
 
   methods: {
